@@ -56,7 +56,7 @@ $password = '';
 - Start **Apache** and **MySQL** from the XAMPP control panel.
 - Access the project at:
 ```
-http://localhost/events
+http://localhost/events/login.php
 ```
 
 ### Step 5: Admin Login Credentials
