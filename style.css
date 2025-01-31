@@ -1004,3 +1004,23 @@ td.list-img img {
 .export-area .desh-item {
     background: #1d2e4c;
 }
+
+@media (max-width: 767px) {
+    .admin-menu {
+        min-height: auto;  /* Reset min-height on mobile devices */
+    }
+    .desh-item {
+        margin-top: 20px;
+    }
+    .row.header_top h2 {
+        font-size: 16px;
+    }
+    .deshbaord-content-area {
+        padding: 20px;
+    }
+    .schedule-block .inner-box {
+        float: none;
+        width: 100%; 
+        text-align: center;
+    }
+}

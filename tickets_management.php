@@ -56,70 +56,82 @@ $totalPages = ceil($totalRows / ROWS_PER_PAGE);
 
 
 
+$eSQuery =  "SELECT DISTINCT t.event_id, 
+                e.event_name, 
+                e.event_date
+            FROM ticket t
+            JOIN event e ON t.event_id = e.event_id";
+$estmt = $pdo->prepare($eSQuery);
+$estmt->execute();
+
+// Fetch the results
+$events = $estmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+
 
  ?>
 
 
 
 <!-- Search Bar -->
-    <div class="row search-bar">
-        <div class="col-md-6 offset-md-3">
-            <input type="text" id="search-input" class="form-control" placeholder="Search by Name, Email, or Phone" value="<?php echo htmlspecialchars($search); ?>">
-            
-
-
-
-
-
-        </div>
+<div class="row search-bar">
+    <div class="col-md-6 offset-md-3">
+        <select id="search-input" class="form-control">
+            <option value="">Select Event</option>
+            <?php foreach ($events as $event) { ?>
+                <option value="<?php echo $event['event_id']?>"><?php echo $event['event_id']." - ". $event['event_name'];?></option>
+            <?php } ?>
+        </select>
     </div>
+</div>
 
-    <!-- Table for Tickets -->
-    <div class="table-responsive">
-        <table class="table table-bordered table-striped" id="ticketTable">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Seat Number</th>
-                    <th>Price</th>
-                    <th>T-shirt Size</th>
-                    <th>Purchased At</th>
-                    <th>Approval Status</th>
-                    <th>Actions</th>
+<!-- Table for Tickets -->
+<div class="table-responsive">
+    <table class="table table-bordered table-striped" id="ticketTable">
+        <thead class="thead-dark">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Seat Number</th>
+                <th>Price</th>
+                <th>T-shirt Size</th>
+                <th>Purchased At</th>
+                <th>Approval Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="ticketTableBody">
+            <!-- Initial rows will be populated by PHP or AJAX -->
+            <?php foreach ($tickets as $ticket) { ?>
+                <tr class="ticket-row" data-event-id="<?php echo $ticket['event_id']; ?>" id="ticket-row-<?php echo $ticket['ticket_id']; ?>">
+                    <td><?php echo $ticket['user_name']; ?></td>
+                    <td><?php echo $ticket['user_email']; ?></td>
+                    <td><?php echo $ticket['user_phone']; ?></td>
+                    <td><?php echo $ticket['seat_number']; ?></td>
+                    <td><?php echo $ticket['price']; ?></td>
+                    <td><?php echo $ticket['tshirt_size']; ?></td>
+                    <td><?php echo $ticket['purchased_at']; ?></td>
+                    <td>
+                        <span class="status-<?php echo $ticket['ticket_id']; ?>">
+                            <?php
+                            echo $ticket['approval_status'] == 'approved' ? "<i class='fas fa-check-circle approved-icon'></i>" :
+                                ($ticket['approval_status'] == 'rejected' ? "<i class='fas fa-times-circle rejected-icon'></i>" : "<i class='fas fa-clock'></i>");
+                            ?>
+                        </span>
+                    </td>
+                    <td>
+                        <?php echo $ticket['approval_status'] == 'pending' ? "<button class='btn btn-approve btn-sm' onclick='approveTicket({$ticket['ticket_id']})'>Approve</button>" : ""; ?>
+                        <button class="btn btn-reject btn-sm" onclick="rejectTicket(<?php echo $ticket['ticket_id']; ?>)">Reject</button>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <?php
-                // Loop through the tickets and display them in the table
-                foreach ($tickets as $ticket) {
-                    echo "<tr id='ticket-row-{$ticket['ticket_id']}'>
-                            <td>{$ticket['user_name']}</td>
-                            <td>{$ticket['user_email']}</td>
-                            <td>{$ticket['user_phone']}</td>
-                            <td>{$ticket['seat_number']}</td>
-                            <td>{$ticket['price']}</td>
-                            <td>{$ticket['tshirt_size']}</td>
-                            <td>{$ticket['purchased_at']}</td>
-                            <td>
-                                <span class='status-{$ticket['ticket_id']}'>
-                                    " . ($ticket['approval_status'] == 'approved' ? "<i class='fas fa-check-circle approved-icon'></i>" : 
-                                          ($ticket['approval_status'] == 'rejected' ? "<i class='fas fa-times-circle rejected-icon'></i>" : "<i class='fas fa-clock'></i>")) . "
-                                </span>
-                            </td>
-                            <td>
-                                " . ($ticket['approval_status'] == 'pending' ? "<button class='btn btn-approve btn-sm' onclick='approveTicket({$ticket['ticket_id']})'>Approve</button>" : "") . "
-                                <button class='btn btn-reject btn-sm' onclick='rejectTicket({$ticket['ticket_id']})'>Reject</button>
-                            </td>
-                        </tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+            <?php } ?>
+        </tbody>
+    </table>
+</div>
 
-     
-    </div>
+
 
 
 

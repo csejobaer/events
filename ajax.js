@@ -757,4 +757,63 @@ $(document).ready(function() {
 
 
 
-// Ticket chart Ajax 
+// Ticket filter ajax
+$(document).ready(function() {
+    $('#search-input').change(function() {
+        var eventId = $(this).val();
+        
+        // Send AJAX request if event is selected
+        if (eventId) {
+            $.ajax({
+                url: 'fetch_tickets.php', // The file where AJAX request is handled
+                method: 'POST',
+                data: { event_id: eventId },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        // Clear existing rows
+                        $('#ticketTableBody').empty();
+                        
+                        // Populate table with new ticket data
+                        var tickets = response.tickets;
+                        $.each(tickets, function(index, ticket) {
+                            var statusIcon = '';
+                            if (ticket.approval_status === 'approved') {
+                                statusIcon = '<i class="fas fa-check-circle approved-icon"></i>';
+                            } else if (ticket.approval_status === 'rejected') {
+                                statusIcon = '<i class="fas fa-times-circle rejected-icon"></i>';
+                            } else {
+                                statusIcon = '<i class="fas fa-clock"></i>';
+                            }
+                            
+                            var row = `
+                                <tr class="ticket-row" data-event-id="${ticket.event_id}" id="ticket-row-${ticket.ticket_id}">
+                                    <td>${ticket.user_name}</td>
+                                    <td>${ticket.user_email}</td>
+                                    <td>${ticket.user_phone}</td>
+                                    <td>${ticket.seat_number}</td>
+                                    <td>${ticket.price}</td>
+                                    <td>${ticket.tshirt_size}</td>
+                                    <td>${ticket.purchased_at}</td>
+                                    <td>
+                                        <span class="status-${ticket.ticket_id}">
+                                            ${statusIcon}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        ${ticket.approval_status === 'pending' ? `<button class="btn btn-approve btn-sm" onclick="approveTicket(${ticket.ticket_id})">Approve</button>` : ''}
+                                        <button class="btn btn-reject btn-sm" onclick="rejectTicket(${ticket.ticket_id})">Reject</button>
+                                    </td>
+                                </tr>
+                            `;
+                            
+                            $('#ticketTableBody').append(row);
+                        });
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        }
+    });
+});
