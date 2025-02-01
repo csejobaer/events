@@ -64,7 +64,7 @@ http://localhost/events/login.php
 - **Password:** `admin@Example1`
 
 ### Troubleshooting
-- If facing database connection issues, check your MySQL credentials in `config.php`.
+- If facing database connection issues, check your MySQL credentials in `database.php`.
 - Ensure MySQL service is running in XAMPP.
 
 ---
