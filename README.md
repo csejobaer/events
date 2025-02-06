@@ -3,11 +3,17 @@ Event Management System 🎉
 A Core PHP-based event management system that allows admins to create and manage events, while users can register and book tickets.
 
 Key Features
+
 ✅ Admin Dashboard – Manage events, users, and bookings.
+
 ✅ Event Posting – Create, edit, and delete event details.
+
 ✅ User Registration – Attendees can sign up and book events.
+
 ✅ Ticket Management – Users receive booking confirmations.
+
 ✅ T-Shirt Selection – Users can select their T-shirt size during ticket purchase.
+
 
 Tech Stack
 🔹 Backend: PHP (Core PHP, MySQL)
